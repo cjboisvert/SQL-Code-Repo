@@ -40,3 +40,17 @@ ROUND(AVG("Height_cm"),2) AS Height_cm,
 ROUND(AVG("Weight_kg"),2) AS Weight_kg
 FROM players_personal
 WHERE "nationality" = 'Brazil';
+
+-- Is it possible to compare the overall rating and potential rating per nationality from each player?
+SELECT "nationality" 
+,MAX("overall")"overall"
+FROM public.players_personal
+GROUP BY "nationality"
+ORDER BY "overall" DESC;
+
+-- Rename columns to be more descriptive
+ALTER TABLE players_personal
+RENAME "overall" TO points;
+
+ALTER TABLE players_personal
+RENAME "potential" TO strength;
