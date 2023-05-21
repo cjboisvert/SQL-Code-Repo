@@ -1,0 +1,30 @@
+-- List 15 albums and their respective artists
+SELECT ar."ArtistId", "Name", "Title"
+FROM public."Artist" ar
+INNER JOIN public."Album" al
+ON ar."ArtistId" = al."ArtistId"
+ORDER BY ar."Name"
+LIMIT 15;
+
+-- Run this query and compare results
+SELECT al."ArtistId", "Title", "Name"
+FROM public."Album" al
+INNER JOIN public."Artist" ar
+ON al."ArtistId" = ar."ArtistId"
+ORDER BY ar."Name";
+
+-- Identify the customers who spend more than $10 and their country
+SELECT c."CustomerId", "FirstName", "LastName", "Country", "Total"
+FROM public."Customer" c
+INNER JOIN "Invoice" i
+ON c."CustomerId" = i."CustomerId"
+WHERE i."Total" > 5
+ORDER BY i."Total";
+
+--
+SELECT CONCAT("FirstName", ' ', "LastName") AS "FullName", "Country", "Total"
+FROM public."Invoice" i
+INNER JOIN public."Customer" c 
+USING ("CustomerId")
+WHERE i."Total" > 10
+ORDER BY i."Total" DESC;
