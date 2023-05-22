@@ -1,0 +1,67 @@
+CREATE TABLE IF NOT EXISTS public.customer_detail
+(
+    customer_id integer NOT NULL,
+    name character varying COLLATE pg_catalog."default",
+    address character varying COLLATE pg_catalog."default",
+    email character varying COLLATE pg_catalog."default",
+    phone_number character varying COLLATE pg_catalog."default",
+    CONSTRAINT customer_detail_pkey PRIMARY KEY (customer_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.customer_detail
+    OWNER to postgres;
+   
+-----------
+
+CREATE TABLE IF NOT EXISTS public.order_detail
+(
+    order_id integer NOT NULL,
+    customer_id integer,
+    purchase_date date,
+    car_make character varying COLLATE pg_catalog."default",
+    car_model_year integer,
+    purchase_price character varying COLLATE pg_catalog."default",
+    CONSTRAINT order_detail_pkey PRIMARY KEY (order_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE IF EXISTS public.order_detail
+    OWNER to postgres;
+    
+-------------
+QUERIES
+-------------
+-- INNER JOIN
+SELECT * 
+FROM customer_detail 
+INNER JOIN order_detail
+ON customer_detail.customer_id = order_detail.customer_id
+
+-- Count the number of cars purchased 2019 onward
+SELECT customer_id, COUNT(customer_id)
+FROM order_detail
+WHERE purchase_date >= '2019-01-01' AND purchase_date <= '2019-12-31'
+GROUP BY customer_id
+HAVING COUNT (customer_id) > 1
+
+-- How many Ford & Toyota?
+SELECT *
+FROM order_detail
+WHERE car_make IN ('Ford','Toyota')
+
+-- Create full outer join
+SELECT * 
+FROM customer_detail
+FULL OUTER JOIN order_detail
+ON customer_detail.customer_id = order_detail.customer_id;
+
+-- What are the names of all customers by car make?
+SELECT od.car_make
+       ,STRING_AGG(DISTINCT cd.name, ', ' ORDER BY cd.name) customer_name
+ FROM public.order_detail od
+     FULL OUTER JOIN public.customer_detail cd ON cd.customer_id = od.customer_id
+GROUP BY od.car_make
+ORDER BY 1;
